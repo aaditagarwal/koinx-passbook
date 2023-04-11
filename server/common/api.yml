@@ -105,6 +105,51 @@ paths:
         200:
           description: Return the API specification
           content: {}
+  /passbook/fetchTransactions/{address}:
+    get:
+      parameters:
+        - name: address
+          in: path
+          description: User's digital wallet address
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return the Ethereum transaction records of the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transactions'
+        4XX:
+          description: User Address not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /passbook/fetchBalance/{address}:
+    get:
+      parameters:
+        - name: address
+          in: path
+          description: User's digital wallet address
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return the latest Ethereum price and the latest balance of the user's ethereum portfolio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/balance'
+        4XX:
+          description: User Address not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     Example:
@@ -119,7 +164,18 @@ components:
     Error:
       type: object
       additionalProperties: true
-
+    Transactions:
+      type: object
+      properties:
+        name: results
+        type: object
+        additionalProperties: true 
+    Balance:
+      type: object
+      properties:
+        name: results
+        type: object
+        additionalProperties: true
     ExampleBody:
       title: example
       required:
