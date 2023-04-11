@@ -27,6 +27,24 @@ class ApiService{
             })
         });
     }
+
+    async fetchEthereumPriceApi() {
+        return new Promise((resolve, reject) => {
+            axios.get(
+                ETHEREUM_URL,
+                {params: {
+                    ids: "ethereum",
+                    vs_currencies: "inr"
+                }}
+            )
+            .then(function (response) {
+                resolve(response?.data);
+            })
+            .catch((err) => {
+                reject(err);
+            });
+        })
+    }
 }
 
 export default new ApiService();
