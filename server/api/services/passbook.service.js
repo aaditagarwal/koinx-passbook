@@ -1,5 +1,5 @@
 import ApiService from "./api.service";
-import Transactions from "./../../models/transaction"
+import {createCollectionIfNotExists} from "./../../models/transaction"
 import ethereum from "./../../models/ethereumPrice"
 import l from "../../common/logger";
 
@@ -19,7 +19,8 @@ class PassbookService {
             .catch((error) => {
                 throw error;
             });
-            const TransactionPromise = await Transactions.insertMany(transactionsArray);
+            const addressCollection = createCollectionIfNotExists(address);
+            const TransactionPromise = addressCollection.insertMany(transactionsArray);
             Promise.all([TransactionPromise]);
             return {transactionsArray: transactionsArray};
         } catch(err) {

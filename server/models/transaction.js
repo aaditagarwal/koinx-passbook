@@ -86,4 +86,6 @@ const TransactionSchema = new mongoose.Schema({
 
 TransactionSchema.index({'hash': 1});
 
-export default mongoose.model('Transactions', TransactionSchema);
+export const createCollectionIfNotExists = (address) => {
+    return mongoose.model(address, TransactionSchema);
+}
