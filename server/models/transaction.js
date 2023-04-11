@@ -12,7 +12,8 @@ const TransactionSchema = new mongoose.Schema({
     hash:{
         type: String,
         required: true,
-        index: true
+        index: true,
+        unique: true
     },
     nonce:{
         type: Number,
@@ -84,7 +85,7 @@ const TransactionSchema = new mongoose.Schema({
     }
 });
 
-TransactionSchema.index({'hash': 1});
+TransactionSchema.index({'hash': 1}, {unique:true});
 
 export const createCollectionIfNotExists = (address) => {
     return mongoose.model(address, TransactionSchema);

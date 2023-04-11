@@ -3,6 +3,10 @@ import l from "../../../common/logger";
 
 export class Controller {
 
+    constructor() {
+        setInterval(PassbookService.fetchEthereumPriceService, 600000);
+    }
+
     async fetchTransactions(req, res, next){
         try{
             const transactions = await PassbookService.fetchTransactionsService(req.query.address);
