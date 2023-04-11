@@ -46,9 +46,7 @@ class PassbookService {
                 throw error;
             });
             ethereumPriceObject = {...ethereumPriceObject, "timestamp": new Date().toISOString()};
-            l.info({ethereumPriceObject})
             const ethereumPromise = await ethereum.insertMany(ethereumPriceObject);
-            console.log({ethereumPromise});
             Promise.all([ethereumPromise]);
             return ethereumPriceObject;
         } catch (error) {
@@ -69,32 +67,32 @@ class PassbookService {
             Promise.all([ethereumPriceObject]);
 
             // Calculate Balance of the curretn user
-            console.log({"balanceObject":this.balance})
             if(this.balance.hasOwnProperty(userAddress)){ // Balance calculated
-                l.info("userAddress found in this.balance");
+
                 const addressCollection = createCollectionIfNotExists(userAddress);
-                const TransactionPromise = await addressCollection.find({ timeStamp: { $gt: new Date(this.balance?.userAddress?.timestamp) } });;
+                const TransactionPromise = await addressCollection.find({ timeStamp: { $gt: this.balance[userAddress]?.timestamp } });;
                 Promise.all([TransactionPromise]);
+
                 var balanceValue = 0;
-                var timestamp = this.balance?.userAddress?.timestamp;
+                var timestamp = this.balance[userAddress]?.timestamp;
                 TransactionPromise.forEach((transactionRecord) => {
                     if(transactionRecord?.to === userAddress) balanceValue += transactionRecord?.value;
                     else if(transactionRecord?.from === userAddress) balanceValue -= transactionRecord?.value;
                     timestamp = Math.max(timestamp, transactionRecord?.timeStamp);                    
                 });
-                this.balance = {
-                    ...this.balance,
-                    userAddress: {
-                        balanceValue: this.balance?.userAddress?.balanceValue + balanceValue,
-                        timestamp
-                    }
+
+                this.balance[userAddress]= {
+                    balanceValue: this.balance[userAddress]?.balanceValue + balanceValue,
+                    timestamp
                 };
-                result = {...result, "Balance": this.balance?.userAddress?.balanceValue};
+                result = {...result, "Balance": this.balance[userAddress]?.balanceValue};
+
             }else{ // Calculating Balance for the first time
-                l.info("userAddress NOT found in this.balance");
+
                 const addressCollection = createCollectionIfNotExists(userAddress);
                 const TransactionPromise = await addressCollection.find({});;
                 Promise.all([TransactionPromise]);
+
                 var balanceValue = 0;
                 var timestamp = null;
                 TransactionPromise.forEach((transactionRecord) => {
@@ -102,12 +100,10 @@ class PassbookService {
                     else if(transactionRecord?.from === userAddress) balanceValue -= transactionRecord?.value;
                     timestamp = Math.max(timestamp, transactionRecord?.timeStamp);        
                 });
-                this.balance = {
-                    ...this.balance,
-                    userAddress: {
-                        timestamp,
-                        balanceValue
-                    }
+
+                this.balance[userAddress] = {
+                    timestamp,
+                    balanceValue
                 };
                 result = {...result, "Balance": balanceValue};
             }
