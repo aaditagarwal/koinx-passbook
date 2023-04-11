@@ -12,16 +12,7 @@ npm install
 
 # run in development mode
 npm run dev
-
-# run tests
-npm run test
 ```
-
-## How do I modify the example API and make it my own?
-
-There are two key files that enable you to customize and describe your API:
-1. `server/routes.js` - This references the implementation of all of your routes. Add as many routes as you like and point each route your express handler functions.
-2. `server/common/api.yaml` - This file contains your [OpenAPI spec](https://swagger.io/specification/). Describe your API here. It's recommended that you to declare any and all validation logic in this YAML. `express-no-stress-typescript`  uses [express-openapi-validator](https://github.com/cdimascio/express-openapi-validator) to automatically handle all API validation based on what you've defined in the spec.
 
 ## Install Dependencies
 
@@ -54,19 +45,13 @@ npm run compile
 npm start
 ```
 
-## Test It
+## Assignment Details
 
-Run the Mocha unit tests
-
-```shell
-npm test
-```
-
-or debug them
-
-```shell
-npm run test:debug
-```
+- Assignment problem statment- [link](https://docs.google.com/document/d/1zDymJGkKOWwwMFWNYAC36k2UPMOjLHJJluGo1Uy0zY0/edit?usp=sharing)
+- Tasks completed:
+  - Task 1, 2, 3
+  - Optional Task 1
+- Api Spec has details for endpoints and Parameters, access it on [http://localhost:3000](http://localhost:3000).
 
 ## Try It
 * Open your browser to [http://localhost:3000](http://localhost:3000)
@@ -82,12 +67,6 @@ npm run test:debug
 
 ```
 npm run dev:debug
-```
-
-#### Debug Tests
-
-```
-npm run test:debug
 ```
 
 #### Debug with VSCode
@@ -106,14 +85,5 @@ Fix all prettier linter errors
 ```
 npm run lint
 ```
-
-## Deploy It
-
-Deploy to CloudFoundry
-
-```shell
-cf push koinx-passbook
-```
-
 
    
