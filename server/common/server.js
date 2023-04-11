@@ -5,10 +5,12 @@ import * as bodyParser from 'body-parser';
 import * as http from 'http';
 import * as os from 'os';
 import l from './logger';
+import mongo from './mongo';
 import * as OpenApiValidator from 'express-openapi-validator';
 import errorHandler from '../api/middlewares/error.handler';
 
 const app = new Express();
+const exit = process.exit;
 
 export default class ExpressServer {
   constructor() {
@@ -55,7 +57,14 @@ export default class ExpressServer {
         } @: ${os.hostname()} on port: ${p}}`
       );
 
-    http.createServer(app).listen(port, welcome(port));
+    mongo().then(() => {
+      l.info(`Database loaded!`);
+      http.createServer(app).listen(port, welcome(port));
+    })
+    .catch((e) => {
+      l.error(e);
+      exit(1);
+    });
 
     return app;
   }
