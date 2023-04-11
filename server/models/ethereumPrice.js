@@ -5,9 +5,9 @@ const EthereumPriceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    priceInr: {
-        type: Number,
-        requred: true
+    price: {
+        type: Object,
+        required: true
     }
 });
 

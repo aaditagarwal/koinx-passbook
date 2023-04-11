@@ -32,27 +32,27 @@ class PassbookService {
     * Fetch Ethereum Price in INR
     */ 
     async fetchEthereumPriceService() {
-        var ethereumPrice;
-        l.info("Ethereum Price Service Invoked")
+        var ethereumPriceObject = {};
         try {
             await ApiService.fetchEthereumPriceApi()
             .then((apiResponse) => {
-                ethereumPrice = apiResponse?.ethereum?.inr;
+                ethereumPriceObject = {"price": apiResponse};
             })
             .catch((error) => {
                 throw error;
             });
-            const ethereumPriceObject = {"timestamp": new Date().toISOString(), "price": ethereumPrice};
-            const ethereumPromise = await ethereum.insertOne(ethereumPriceObject);
+            ethereumPriceObject = {...ethereumPriceObject, "timestamp": new Date().toISOString()};
+            l.info({ethereumPriceObject})
+            const ethereumPromise = await ethereum.insertMany(ethereumPriceObject);
             console.log({ethereumPromise});
             Promise.all([ethereumPromise]);
-            return {"ethereum": {
-                "inr": ethereumPrice
-            }};
+            return ethereumPriceObject;
         } catch (error) {
             throw error;
         }
-    } 
+    }
+
+    
 
 }
 
