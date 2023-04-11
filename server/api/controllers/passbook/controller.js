@@ -16,6 +16,14 @@ export class Controller {
         }
     }
 
+    async fetchBalance(req, res, next){
+        try{
+            const balance = await PassbookService.fetchBalanceService(req.query.address);
+            res.status(200).json({results: balance});
+        } catch (err) {
+            next(err);
+        }
+    }
 
 }
 

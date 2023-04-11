@@ -50,9 +50,15 @@ class PassbookService {
         } catch (error) {
             throw error;
         }
-    }
+    };
 
-    
+    /**
+    * Fetch Current balance of the user and teh current INR price of ethereum
+    * @param {string} address - crypto wallet address of the user
+    */
+    async fetchBalanceService(address) {
+
+    };
 
 }
 

@@ -3,4 +3,5 @@ import controller from "./controller";
 
 export default express
     .Router()
-    .get('/fetchTransactions', controller.fetchTransactions);
+    .get('/fetchTransactions', controller.fetchTransactions)
+    .get('/fetchBalance', controller.fetchBalance);
