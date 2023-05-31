@@ -14,21 +14,18 @@ class PassbookService {
     * @param {string} address - crypto wallet address of the user
     */
     async fetchTransactionsService(address){
-        var transactionsArray;
+        let transactionsArray;
         try{
-            await ApiService.fetchTransactionsApi(address)
-            .then((apiResponse) => {
-                transactionsArray = apiResponse;
-            })
-            .catch((error) => {
-                throw error;
-            });
+            const apiResponse = await ApiService.fetchTransactionsApi(address);
+            transactionsArray = apiResponse;
+
             const addressCollection = createCollectionIfNotExists(address);
             const TransactionPromise = addressCollection.insertMany(transactionsArray);
-            Promise.all([TransactionPromise]);
-            return {transactionsArray: transactionsArray};
-        } catch(err) {
-            throw err;
+            // Promise.all([TransactionPromise]);
+            
+            return transactionsArray;
+        } catch(error) {
+            throw error;
         }
     };
 
@@ -36,18 +33,15 @@ class PassbookService {
     * Fetch Ethereum Price in INR
     */ 
     async fetchEthereumPriceService() {
-        var ethereumPriceObject = {};
+        let ethereumPriceObject = {};
         try {
-            await ApiService.fetchEthereumPriceApi()
-            .then((apiResponse) => {
-                ethereumPriceObject = {"price": apiResponse};
-            })
-            .catch((error) => {
-                throw error;
-            });
+            const apiResponse = await ApiService.fetchEthereumPriceApi()
+            ethereumPriceObject = {"price": apiResponse};
             ethereumPriceObject = {...ethereumPriceObject, "timestamp": new Date().toISOString()};
+
             const ethereumPromise = await ethereum.insertMany(ethereumPriceObject);
-            Promise.all([ethereumPromise]);
+            // Promise.all([ethereumPromise]);
+            
             return ethereumPriceObject;
         } catch (error) {
             throw error;
@@ -59,22 +53,21 @@ class PassbookService {
     * @param {string} address - crypto wallet address of the user
     */
     async fetchBalanceService(userAddress) {
-        var result = {};
+        let result = {};
         try{
             // Latest Fetched Ethereum Price
             const ethereumPriceObject = await ethereum.find().limit(1).sort({$natural: -1});
             result = {...result, "Price": ethereumPriceObject[0]?.price, "timestamp": ethereumPriceObject[0]?.timestamp};
-            Promise.all([ethereumPriceObject]);
+            // Promise.all([ethereumPriceObject]);
 
             // Calculate Balance of the curretn user
             if(this.balance.hasOwnProperty(userAddress)){ // Balance calculated
-
                 const addressCollection = createCollectionIfNotExists(userAddress);
                 const TransactionPromise = await addressCollection.find({ timeStamp: { $gt: this.balance[userAddress]?.timestamp } });;
-                Promise.all([TransactionPromise]);
+                // Promise.all([TransactionPromise]);
 
-                var balanceValue = 0;
-                var timestamp = this.balance[userAddress]?.timestamp;
+                let balanceValue = 0;
+                let timestamp = this.balance[userAddress]?.timestamp;
                 TransactionPromise.forEach((transactionRecord) => {
                     if(transactionRecord?.to === userAddress) balanceValue += transactionRecord?.value;
                     else if(transactionRecord?.from === userAddress) balanceValue -= transactionRecord?.value;
@@ -86,12 +79,10 @@ class PassbookService {
                     timestamp
                 };
                 result = {...result, "Balance": this.balance[userAddress]?.balanceValue};
-
             }else{ // Calculating Balance for the first time
-
                 const addressCollection = createCollectionIfNotExists(userAddress);
                 const TransactionPromise = await addressCollection.find({});;
-                Promise.all([TransactionPromise]);
+                // Promise.all([TransactionPromise]);
 
                 var balanceValue = 0;
                 var timestamp = null;
@@ -107,11 +98,23 @@ class PassbookService {
                 };
                 result = {...result, "Balance": balanceValue};
             }
+            return result;
         } catch (err) {
             throw err;
         }
-        return result;
     };
+
+    /**
+     * Fetch Top 1000 Coins by marketcap. 
+     */
+    async fetchCoins() {
+        try{
+            const apiResponse = await ApiService.fetchCoinsApi()
+            return apiResponse;
+        } catch(error) {
+            throw error;
+        };
+    }
 
 }
 

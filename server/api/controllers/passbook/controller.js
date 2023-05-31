@@ -11,8 +11,8 @@ export class Controller {
         try{
             const transactions = await PassbookService.fetchTransactionsService(req.query.address);
             res.status(200).json({results: transactions});
-        } catch(err) {
-            next(err);
+        } catch(error) {
+            next(error);
         }
     }
 
@@ -20,9 +20,18 @@ export class Controller {
         try{
             const balance = await PassbookService.fetchBalanceService(req.query.address);
             res.status(200).json({results: balance});
-        } catch (err) {
-            next(err);
+        } catch (error) {
+            next(error);
         }
+    }
+
+    async fetchCoins(req, res, next){
+        try{
+            const coins = await PassbookService.fetchCoins();
+            res.status(200).json({results: coins});
+        } catch(error) {
+            next(error);
+        };
     }
 
 }
